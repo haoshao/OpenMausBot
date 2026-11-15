@@ -1,0 +1,45 @@
+name: GPT-Live server integration (staging)
+
+on:
+  push:
+    branches:
+      - feature/android-v1.5-gpt-live-server-integration
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-server:
+    name: Typecheck and GPT-Live server/companion regression
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@ff378ebe6b225b0680b81c1ad4498ae0d1d3a5e3 # v6.0.10
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install exact locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Typecheck TypeScript and companion
+        run: pnpm typecheck
+      - name: Lint source
+        run: pnpm lint
+      - name: GPT-Live, auth, and companion route regression
+        run: |
+          pnpm exec vitest run \
+            server/live-call-controller.test.ts \
+            server/live-call.test.ts \
+            server/live-call.e2e.test.ts \
+            server/routes/live.test.ts \
+            server/config.test.ts \
+            server/request-auth.test.ts \
+            server/steer-queue.test.ts \
+            companion/test/routes.test.ts \
+            companion/test/control.test.ts \
+            companion/test/harness-notice.test.ts \
+            companion/test/proxy.test.ts \
+            shared/live-call.test.ts \
+            shared/live-approval.test.ts

@@ -221,6 +221,8 @@ function transaction<T>(fn: (database: DatabaseSync) => T): T {
 
 export interface FollowupPayload {
   text: string;
+  /** Time an incoming Live follow-up was queued; absent on legacy entries. */
+  queuedAt?: number;
   prompt?: string;
   replyToId?: string;
   sendId?: string;
@@ -228,7 +230,9 @@ export interface FollowupPayload {
   unattended?: boolean;
   peerAsk?: Message["peerAsk"];
   mode?: "chat" | "goal";
-  via?: "api";
+  /** "api": a room line sent through the local API with no session behind
+   * it. "call": a person's words relayed from a Live call. */
+  via?: "api" | "call";
   /** Who queued these words. Absent on the owner's own sends and on every
    * row written before this existed; both read as the profile name. */
   sender?: ResolvedSender;
