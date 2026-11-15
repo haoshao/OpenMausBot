@@ -8,7 +8,7 @@ echo "Commit: $(git rev-parse --short HEAD)"
 echo "JAVA_HOME: ${JAVA_HOME:-<unset>}"
 java -version
 echo "ANDROID_HOME: ${ANDROID_HOME:-<unset>}"
-test -d "${ANDROID_HOME:?ANDROID_HOME is required}/platforms/android-37"
+test -d "${ANDROID_HOME:?ANDROID_HOME is required}/platforms/android-37.0"
 test -x "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
 "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --list_installed
 
