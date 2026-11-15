@@ -17,7 +17,6 @@
         "fwcd.kotlin"
       ],
       "settings": {
-        "java.jdt.ls.java.home": "/usr/lib/jvm/msopenjdk-17-amd64",
         "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
