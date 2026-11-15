@@ -5,6 +5,7 @@ on:
     branches:
       - feature/android-v1.5-gpt-live-background
       - feature/android-v1.5-gpt-live-port-stage
+      - feature/android-v1.5-gpt-live-server-integration
   workflow_dispatch:
 
 permissions:
