@@ -33,7 +33,7 @@ echo "Accepting Android SDK licenses..."
 yes | sdkmanager --licenses >/dev/null || true
 
 echo "Installing Android platform 37 and build tools..."
-sdkmanager --install "platform-tools" "platforms;android-37" "build-tools;37.0.0"
+sdkmanager --install "platform-tools" "platforms;android-37.0" "build-tools;37.0.0"
 
 # Gradle uses ANDROID_HOME. Do not commit local.properties, keystores, or secrets.
 echo "Java version:"
