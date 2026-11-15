@@ -11,4 +11,9 @@
     <string name="notification_channel_always_on_desc">Shown while OpenMausBot stays connected in the background</string>
     <string name="always_on_notification_title">MausBot is staying connected</string>
     <string name="always_on_notification_text">Notifications will reach you even with the app closed</string>
+    <string name="notification_channel_live_call">Live calls</string>
+    <string name="notification_channel_live_call_desc">Keeps your microphone call running in the background</string>
+    <string name="live_call_notification_title">Live call in progress</string>
+    <string name="live_call_notification_text">Microphone active · Tap to return to the call</string>
+    <string name="live_call_hang_up">Hang up</string>
 </resources>

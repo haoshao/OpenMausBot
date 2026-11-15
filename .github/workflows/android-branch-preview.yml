@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/android-v1.5-gpt-live-background
+      - feature/android-v1.5-gpt-live-port-stage
   workflow_dispatch:
 
 permissions:
@@ -28,7 +29,7 @@ jobs:
       - name: Run unit tests and build Preview APK
         run: |
           cd android
-          ./gradlew --no-daemon --max-workers=1 "-Dorg.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m" -Pkotlin.compiler.execution.strategy=in-process :core:test :app:testDebugUnitTest :app:assemblePreview
+          ./gradlew --no-daemon --max-workers=1 "-Dorg.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=768m" -Pkotlin.compiler.execution.strategy=in-process :core:test :app:testDebugUnitTest :app:assemblePreview
       - name: Upload installable Preview APK
         if: success()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

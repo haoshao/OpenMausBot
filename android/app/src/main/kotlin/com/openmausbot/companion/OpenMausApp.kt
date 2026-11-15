@@ -2,6 +2,8 @@ package com.openmausbot.companion
 
 import android.app.Application
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.openmausbot.companion.audio.LiveCallManager
+import com.openmausbot.companion.audio.LiveCallForegroundState
 import com.openmausbot.companion.audio.VoicePreviewPlayer
 import com.openmausbot.companion.audio.VoiceNotePlayer
 import com.openmausbot.companion.avatar.AvatarImageStore
@@ -57,6 +59,8 @@ class OpenMausApp : Application() {
         private set
     lateinit var voiceNotes: VoiceNotePlayer
         private set
+    lateinit var liveCalls: LiveCallManager
+        private set
     lateinit var linger: SessionLingerController
         private set
     lateinit var shareInbox: ShareInbox
@@ -89,8 +93,16 @@ class OpenMausApp : Application() {
             notificationSink = notifications,
         )
         avatars = AvatarImageStore(fetch = session::avatarData)
-        voicePreview = VoicePreviewPlayer(this)
-        voiceNotes = VoiceNotePlayer(this)
+        // The call survives Activity teardown, Home and screen lock.
+        // Its microphone foreground service, not ProcessLifecycleOwner.onStop,
+        // owns the background lifecycle.
+        liveCalls = LiveCallManager(this, session, appScope)
+        // A voice note or a voice preview asks for the audio focus, and the
+        // call ends when it loses that focus: both players refuse while the
+        // call holds the audio, whatever asks them to play.
+        val liveCallHoldsAudio = { liveCalls.state.value.holdsMedia }
+        voicePreview = VoicePreviewPlayer(this, liveCallHoldsAudio = liveCallHoldsAudio)
+        voiceNotes = VoiceNotePlayer(this, liveCallHoldsAudio = liveCallHoldsAudio)
 
         // iOS resets the avatar cache inside signOut. Observe Unpaired here so
         // the platform cache cannot outlive the pairing that minted its URLs.
@@ -112,7 +124,7 @@ class OpenMausApp : Application() {
             session = session,
             scope = appScope,
             anchor = ServiceProcessAnchor(this),
-            alwaysOn = { AlwaysOnConnectionState.active },
+            alwaysOn = { AlwaysOnConnectionState.active || LiveCallForegroundState.active },
         )
 
         alwaysOn = AlwaysOnPreferences(this)

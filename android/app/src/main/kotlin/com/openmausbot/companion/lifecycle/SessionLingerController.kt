@@ -98,7 +98,20 @@ class SessionLingerController(
 
     override fun onStop(owner: LifecycleOwner) {
         foreground = false
-        // AlwaysOnConnectionService is already holding the process open for as
+        startBackgroundWindow()
+    }
+
+    /**
+     * A user can hang up from the persistent notification without reopening
+     * the Activity. Restart normal background linger when the call service
+     * ends; otherwise no onStop callback remains to disconnect the SSE stream.
+     */
+    fun onExternalForegroundStopped() {
+        if (!foreground) startBackgroundWindow()
+    }
+
+    private fun startBackgroundWindow() {
+        // A foreground service is already holding the process open for as
         // long as the user left it enabled — this window would only ever be
         // redundant (service still running) or premature (service between
         // onDestroy and its own restart), so skip it entirely rather than race it.
